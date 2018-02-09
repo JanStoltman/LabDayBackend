@@ -13,7 +13,7 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
 class Speaker(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(blank=True, max_length=100)
+    name = models.CharField(max_length=100)
     info = models.TextField(blank=True)
     img = models.TextField(blank=True)
 
@@ -31,7 +31,7 @@ class Event(models.Model):
                                    related_name='events')
     dor1_img = models.TextField(blank=True)
     dor2_img = models.TextField(blank=True)
-    latitude = models.FloatField(blank=True)
+    latitude = models.TextField(blank=True)
     longitude = models.TextField(blank=True)
 
 
