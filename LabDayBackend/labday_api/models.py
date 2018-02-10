@@ -41,8 +41,8 @@ class Place(models.Model):
     name = models.CharField(max_length=100)
     info = models.TextField(blank=True)
     img = models.TextField(blank=True)
-    latitude = models.FloatField(blank=True)
-    longitude = models.TextField(blank=True)
+    latitude = models.TextField(blank=True, max_length=15)
+    longitude = models.TextField(blank=True, max_length=15)
 
 
 class Path(models.Model):
