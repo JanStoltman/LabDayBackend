@@ -33,3 +33,11 @@ class TimetableSerializer(serializers.ModelSerializer):
     class Meta:
         model = Timetable
         fields = ('id', 'path_id', 'event_id', 'time_start', 'time_end')
+
+
+class AppDataSerializer(serializers.Serializer):
+    speakers = SpeakerSerializer(many=True)
+    events = EventSerializer(many=True)
+    places = PlaceSerializer(many=True)
+    paths = PathSerializer(many=True)
+    timetables = TimetableSerializer(many=True)

@@ -1,4 +1,5 @@
 from django.urls import path
+from django.conf.urls import url, include
 from rest_framework.authtoken import views as authViews
 from rest_framework import routers
 
@@ -13,7 +14,8 @@ router.register(r'timetables', Timetables, base_name='Timetable')
 
 app_name = 'labday_api'
 urlpatterns = [
-    path(r'login', authViews.obtain_auth_token, name='login')
+    path(r'login', authViews.obtain_auth_token, name='Login'),
+    path(r'app-data', AppData.as_view(), name='AppData'),
+    url(r'^', include(router.urls))
 ]
 
-urlpatterns += router.urls
