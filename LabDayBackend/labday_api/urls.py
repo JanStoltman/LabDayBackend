@@ -16,6 +16,6 @@ app_name = 'labday_api'
 urlpatterns = [
     path(r'login', authViews.obtain_auth_token, name='Login'),
     path(r'app-data', AppData.as_view(), name='AppData'),
+    path(r'last-update', LastUpdate.as_view(), name='LastUpdate'),
     url(r'^', include(router.urls))
 ]
-

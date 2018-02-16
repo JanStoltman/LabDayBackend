@@ -16,6 +16,7 @@ class Speaker(models.Model):
     name = models.CharField(max_length=100)
     info = models.TextField(blank=True)
     img = models.TextField(blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Event(models.Model):
@@ -33,6 +34,7 @@ class Event(models.Model):
     dor2_img = models.TextField(blank=True)
     latitude = models.TextField(blank=True)
     longitude = models.TextField(blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Place(models.Model):
@@ -43,6 +45,7 @@ class Place(models.Model):
     img = models.TextField(blank=True)
     latitude = models.TextField(blank=True, max_length=15)
     longitude = models.TextField(blank=True, max_length=15)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Path(models.Model):
@@ -50,6 +53,7 @@ class Path(models.Model):
     name = models.TextField(blank=True)
     info = models.TextField(blank=True)
     active = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Timetable(models.Model):
@@ -60,3 +64,4 @@ class Timetable(models.Model):
                                  null=True, blank=True, default=None)
     time_start = models.BigIntegerField(default=0, blank=True)
     time_end = models.BigIntegerField(default=0, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)

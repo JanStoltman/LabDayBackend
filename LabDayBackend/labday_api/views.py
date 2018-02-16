@@ -1,5 +1,12 @@
 from rest_framework import viewsets
+from rest_framework.generics import RetrieveAPIView
 from drf_multiple_model.views import ObjectMultipleModelAPIView
+from itertools import chain
+from operator import attrgetter
+
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .serializers import *
 from .permissions import IsAdminOrReadOnly
@@ -43,3 +50,16 @@ class AppData(ObjectMultipleModelAPIView):
         {'queryset': Path.objects.all(), 'serializer_class': PathSerializer, 'label': 'paths'},
         {'queryset': Timetable.objects.all(), 'serializer_class': TimetableSerializer, 'label': 'timetables'}
     ]
+
+
+class LastUpdate(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        queryset = sorted(
+            chain(Event.objects.all(), Speaker.objects.all(), Place.objects.all(),
+                  Path.objects.all(), Timetable.objects.all()),
+            key=attrgetter('updated_at'),
+            reverse=True
+        )
+        return Response({'updated_at': queryset[0].updated_at})

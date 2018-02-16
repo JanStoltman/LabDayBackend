@@ -14,7 +14,7 @@ class EventSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'name', 'img', 'address', 'room',
             'topic', 'speaker_id', 'dor1_img',
-            'dor2_img', 'latitude', 'longitude')
+            'dor2_img', 'latitude', 'longitude', 'updated_at')
 
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -36,6 +36,12 @@ class TimetableSerializer(serializers.ModelSerializer):
 
 
 class AppDataSerializer(serializers.Serializer):
+    def create(self, validated_data):
+        pass
+
+    def update(self, instance, validated_data):
+        pass
+
     speakers = SpeakerSerializer(many=True)
     events = EventSerializer(many=True)
     places = PlaceSerializer(many=True)
