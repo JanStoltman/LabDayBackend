@@ -5,7 +5,9 @@ from drf_multiple_model.views import ObjectMultipleModelAPIView
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.http import HttpResponseForbidden
 from rest_framework.views import APIView
+from rest_framework.authtoken.views import ObtainAuthToken
 
 from .permissions import IsAdminOrReadOnly
 from .serializers import *
@@ -63,3 +65,20 @@ class LastUpdate(APIView):
             reverse=True
         )
         return Response({'updated_at': queryset[0].updated_at})
+
+
+class ObtainToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+
+        # Account is used for the first time (Unless the db was cleaned), return token
+        # Make a hardcoded exception for test account TODO: Change to something smarter
+        if user.username == 'test' or created:
+            return Response({'token': token.key})
+        # Else return info that login/password has been used before
+        else:
+            return HttpResponseForbidden()
