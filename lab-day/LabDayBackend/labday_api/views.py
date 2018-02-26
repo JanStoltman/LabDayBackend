@@ -1,6 +1,7 @@
 from itertools import chain
 from operator import attrgetter
 
+from django.utils.crypto import get_random_string
 from drf_multiple_model.views import ObjectMultipleModelAPIView
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -75,10 +76,9 @@ class ObtainToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
 
-        # Account is used for the first time (Unless the db was cleaned), return token
-        # Make a hardcoded exception for test account TODO: Change to something smarter
-        if user.username == 'test' or created:
-            return Response({'token': token.key})
-        # Else return info that login/password has been used before
-        else:
-            return HttpResponseForbidden()
+        # Change password so each login/password can be used only once
+        if not user.username == 'test':
+            user.set_password(get_random_string(32))
+            user.save()
+
+        return Response({'token': token.key})

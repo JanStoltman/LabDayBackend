@@ -1,23 +1,40 @@
 import sys
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
+from rest_framework.authtoken.views import ObtainAuthToken
+from django.utils.crypto import get_random_string
+from rest_framework.permissions import IsAdminUser
+from django.http.response import HttpResponse, HttpResponseNotModified
 
 User = get_user_model()
 
 
-def create_users(amount):
-    users_number = User.objects.all().count()
+class CreateUsers(ObtainAuthToken):
+    permission_classes = (IsAdminUser,)
 
-    for i in range(users_number, amount + users_number):
-        try:
-            print('Creating user {0}.'.format(username))
-            user = User.objects.create_user(username=username, email=email)
-            user.set_password(password)
-            user.save()
+    def post(self, request, *args, **kwargs):
+        amount = request.POST['amount']
+        if self.create_users(int(amount)):
+            return HttpResponse('Users created')
+        else:
+            return HttpResponseNotModified()
 
-            assert authenticate(username=username, password=password)
-            print('User {0} successfully created.'.format(username))
+    @staticmethod
+    def create_users(amount):
+        users_number = User.objects.all().count()
 
-        except:
-            print('There was a problem creating the user: {0}.  Error: {1}.'
-                  .format(username, sys.exc_info()[1]))
+        for i in range(users_number, amount + users_number):
+            username = 'User{0}'.format(i + 1)
+            password = get_random_string(10)
+            try:
+                user = User.objects.create_user(username=username)
+                user.set_password(password)
+                user.save()
+
+                assert authenticate(username=username, password=password)
+
+            except:
+                print('There was a problem creating the user: {0}.  Error: {1}.'
+                      .format(username, sys.exc_info()[1]))
+                return False
+        return True
