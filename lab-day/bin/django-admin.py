@@ -1,4 +1,4 @@
-#!/home/yggdralisk/Desktop/LabDayBackend/lab-day/bin/python3.5
+#!/home/yggdralisk/LabDayBackend/lab-day/bin/python3.5
 from django.core import management
 
 if __name__ == "__main__":
