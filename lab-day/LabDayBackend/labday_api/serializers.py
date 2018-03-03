@@ -12,7 +12,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = (
-            'id', 'name', 'img', 'address', 'room',
+            'id', 'name', 'img', 'address', 'room', 'info',
             'topic', 'speaker_id', 'dor1_img',
             'dor2_img', 'latitude', 'longitude')
 
@@ -20,7 +20,7 @@ class EventSerializer(serializers.ModelSerializer):
 class PlaceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Place
-        fields = ('id', 'type', 'name', 'info', 'latitude', 'longitude')
+        fields = ('id', 'type', 'name', 'info', 'img', 'latitude', 'longitude')
 
 
 class PathSerializer(serializers.ModelSerializer):
