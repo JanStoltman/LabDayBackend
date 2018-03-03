@@ -6,7 +6,7 @@ class IsAdminOrReadOnly(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         else:
-            return IsAdmin.has_permission(request, view)
+            return request.user.is_staff
 
 
 class IsAdmin(BaseException):
