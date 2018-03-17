@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.authtoken.views import ObtainAuthToken
 from django.utils.crypto import get_random_string
 from rest_framework.permissions import IsAdminUser
-from django.http.response import HttpResponse, HttpResponseNotModified
+from django.http.response import HttpResponseRedirect, HttpResponseNotModified
 
 User = get_user_model()
 
@@ -15,12 +15,14 @@ class CreateUsers(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         amount = request.POST['amount']
         if self.create_users(int(amount)):
-            return HttpResponse('Users created')
+            nxt = request.POST.get('next','/')
+            return HttpResponseRedirect(nxt)
         else:
             return HttpResponseNotModified()
 
     @staticmethod
     def create_users(amount):
+        #TODO: Change this, so we could better assert the number of users
         users_number = User.objects.all().count()
 
         for i in range(users_number, amount + users_number):
