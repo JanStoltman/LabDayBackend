@@ -71,7 +71,10 @@ class SendUsers(ObtainAuthToken):
 
             for user in users:
                 password = get_random_string(10)  # Create one-time-use password
-                us += "{0} {1} {2}\n".format(user.get_username(), password, user.userdetails.path.name)
+                path = "None"
+                if user.userdetails.path is not None:
+                    path = user.userdetails.path.name
+                us += "{0} {1} {2}\n".format(user.get_username(), password, path)
 
                 user.set_password(password)
                 user.save()
