@@ -19,6 +19,16 @@
     <input type="hidden" name="next" value="{{ request.path }}">
     <input type="submit" value="Create">
 </form>
+
+<form action="/admin/send-users" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <label for="send_users">Send users by email</label>
+    <input id="send_users" type="text" min="0" name="email" value="example@ex.com"/>
+    <input type="hidden" name="next" value="{{ request.path }}">
+    <input type="submit" value="Send">
+</form>
+
 {% if app_list %}
     {% for app in app_list %}
         <div class="app-{{ app.app_label }} module">

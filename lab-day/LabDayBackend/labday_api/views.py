@@ -79,6 +79,7 @@ class ObtainToken(ObtainAuthToken):
         # Change password so each login/password can be used only once
         if not (user.username == 'test' or request.user.is_staff):
             user.set_password(get_random_string(32))
+            user.userPasswordChanges.password_used = True
             user.save()
 
         return Response({'token': token.key})
