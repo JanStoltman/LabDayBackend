@@ -64,13 +64,13 @@ class SendUsers(ObtainAuthToken):
     def send_email(self, email):
         users = User.objects. \
             filter(username__contains='User'). \
-            filter(userpasswordchanges__password_used=False)
+            filter(userdetails__password_used=False)
         try:
             us = ''
 
             for user in users:
                 password = get_random_string(10)  # Create one-time-use password
-                us += "{0} {1}\n".format(user.get_username(), password)
+                us += "{0} {1}\n".format(user.get_username(), password, user.UserDetails.path.name)
 
                 user.set_password(password)
                 user.save()

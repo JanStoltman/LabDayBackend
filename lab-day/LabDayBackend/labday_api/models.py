@@ -67,7 +67,8 @@ class Timetable(models.Model):
     time_end = models.BigIntegerField(default=0, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-class UserPasswordChanges(models.Model):
+class UserDetails(models.Model):
+    path = models.ForeignKey(to=Path, on_delete=models.DO_NOTHING, null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     password_used = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now=True)
@@ -75,5 +76,5 @@ class UserPasswordChanges(models.Model):
     @receiver(post_save, sender=User)
     def save_user_password_changes(sender, instance, created, **kwargs):
         if created:
-            changes = UserPasswordChanges(user=instance)
+            changes = UserDetails(user=instance)
             changes.save()
