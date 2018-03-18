@@ -17,7 +17,7 @@ admin.site.register(Timetable)
 class ProfileInline(admin.StackedInline):
     model = UserDetails
     can_delete = False
-    verbose_name_plural = 'Profile'
+    verbose_name_plural = 'UserDetails'
     fk_name = 'user'
 
 class CustomUserAdmin(UserAdmin):

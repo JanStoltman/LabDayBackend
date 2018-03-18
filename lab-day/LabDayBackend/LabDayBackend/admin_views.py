@@ -36,6 +36,7 @@ class CreateUsers(ObtainAuthToken):
             username = 'User{0}'.format(i + 1)
             password = get_random_string(10)
             try:
+                #TODO: In case of error this will create user without password
                 user = User.objects.create_user(username=username)
                 user.set_password(password)
                 user.save()
@@ -70,7 +71,7 @@ class SendUsers(ObtainAuthToken):
 
             for user in users:
                 password = get_random_string(10)  # Create one-time-use password
-                us += "{0} {1}\n".format(user.get_username(), password, user.UserDetails.path.name)
+                us += "{0} {1} {2}\n".format(user.get_username(), password, user.userdetails.path.name)
 
                 user.set_password(password)
                 user.save()
