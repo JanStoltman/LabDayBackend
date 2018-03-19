@@ -100,4 +100,4 @@ ENV/
 .mypy_cache/
 
 # Secret settings
-LabDayBackend/LabDayBackend/settings_secret.py
+lab-day/LabDayBackend/LabDayBackend/settings_secret.py

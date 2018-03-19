@@ -1,17 +1,16 @@
 import email
 import smtplib
 import sys
+
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
-from django.db.models.functions import Length
-from rest_framework.authtoken.views import ObtainAuthToken
+from django.http.response import HttpResponseRedirect, HttpResponseNotModified
 from django.utils.crypto import get_random_string
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAdminUser
-from django.http.response import HttpResponseRedirect, HttpResponseNotModified, HttpResponseNotFound
-from django.core.mail import EmailMessage
-from .settings_secret import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+
 from .settings import EMAIL_PORT, EMAIL_HOST
-import re
+from .settings_secret import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 
 User = get_user_model()
 
@@ -21,14 +20,15 @@ class CreateUsers(ObtainAuthToken):
 
     def post(self, request, *args, **kwargs):
         amount = request.POST['amount']
-        if self.create_users(int(amount)):
+        path_id = request.POST['path_id']
+        if self.create_users(int(amount), int(path_id)):
             nxt = request.POST.get('next', '/')
             return HttpResponseRedirect(nxt)
         else:
             return HttpResponseNotModified()
 
     @staticmethod
-    def create_users(amount):
+    def create_users(amount, path_id):
         # TODO: Change this, so we could better assert the number of users
         users_number = User.objects.all().count()
 
@@ -38,6 +38,8 @@ class CreateUsers(ObtainAuthToken):
             try:
                 #TODO: In case of error this will create user without password
                 user = User.objects.create_user(username=username)
+                user.userdetails.path_id = path_id
+                user.userdetails.save()
                 user.set_password(password)
                 user.save()
 

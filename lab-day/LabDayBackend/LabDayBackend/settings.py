@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 import socket
-from .settings_secret import SECRET_KEY
+from .settings_secret import *
 
 if socket.gethostname() == "yggdralisk-Lenovo-Z51-70":
     from .local_settings import *
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'labday_api',
     'drf_multiple_model',
+    'geoposition',
 ]
 
 MIDDLEWARE = [
@@ -132,6 +133,17 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
+
+GEOPOSITION_MAP_OPTIONS = {
+    'minZoom': 15,
+    'maxZoom': 20,
+    'zoom' : 16,
+    'center' : {'lat': 51.10794107158587, 'lng': 17.061424255371094},
+}
+
+GEOPOSITION_MARKER_OPTIONS = {
+    'cursor' : 'move',
+    'position' :  {'lat': 51.10794107158587, 'lng': 17.061424255371094},
+}
