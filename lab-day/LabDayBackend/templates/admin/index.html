@@ -1,4 +1,5 @@
 {% extends "admin/base_site.html" %}
+{% load path_tags %}
 {% load i18n static %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
@@ -16,6 +17,12 @@
     {{ form }}
     <label for="create_users">Create users</label>
     <input id="create_users" type="number" min="0" name="amount" value="{{ 0 }}">
+    <select name="path_id">
+        {% get_paths as paths %}
+        {% for path in paths %}
+            <option value="{{ path.id }}" name="path_id">{{ path }}</option>
+        {% endfor %}
+    </select>
     <input type="hidden" name="next" value="{{ request.path }}">
     <input type="submit" value="Create">
 </form>

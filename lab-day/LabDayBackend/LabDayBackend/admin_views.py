@@ -20,14 +20,15 @@ class CreateUsers(ObtainAuthToken):
 
     def post(self, request, *args, **kwargs):
         amount = request.POST['amount']
-        if self.create_users(int(amount)):
+        path_id = request.POST['path_id']
+        if self.create_users(int(amount), int(path_id)):
             nxt = request.POST.get('next', '/')
             return HttpResponseRedirect(nxt)
         else:
             return HttpResponseNotModified()
 
     @staticmethod
-    def create_users(amount):
+    def create_users(amount, path_id):
         # TODO: Change this, so we could better assert the number of users
         users_number = User.objects.all().count()
 
@@ -37,6 +38,8 @@ class CreateUsers(ObtainAuthToken):
             try:
                 #TODO: In case of error this will create user without password
                 user = User.objects.create_user(username=username)
+                user.userdetails.path_id = path_id
+                user.userdetails.save()
                 user.set_password(password)
                 user.save()
 
