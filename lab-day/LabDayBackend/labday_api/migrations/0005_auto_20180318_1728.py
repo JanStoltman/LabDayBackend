@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('labday_api', '0004_auto_20180318_1726'),
+        ('labday_api', '0004_auto_20180318_2031'),
     ]
 
     operations = [

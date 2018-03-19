@@ -1,17 +1,16 @@
 import email
 import smtplib
 import sys
+
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
-from django.db.models.functions import Length
-from rest_framework.authtoken.views import ObtainAuthToken
+from django.http.response import HttpResponseRedirect, HttpResponseNotModified
 from django.utils.crypto import get_random_string
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAdminUser
-from django.http.response import HttpResponseRedirect, HttpResponseNotModified, HttpResponseNotFound
-from django.core.mail import EmailMessage
-from .settings_secret import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+
 from .settings import EMAIL_PORT, EMAIL_HOST
-import re
+from .settings_secret import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 
 User = get_user_model()
 

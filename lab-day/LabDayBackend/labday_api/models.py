@@ -1,6 +1,8 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from geoposition import Geoposition
+from geoposition.fields import GeopositionField
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -44,9 +46,15 @@ class Place(models.Model):
     name = models.CharField(max_length=100)
     info = models.TextField(blank=True)
     img = models.TextField(blank=True)
-    latitude = models.TextField(blank=True, max_length=15)
-    longitude = models.TextField(blank=True, max_length=15)
+    position = GeopositionField(blank=True)
+    latitude = models.TextField(blank=True, max_length=20, editable=False)
+    longitude = models.TextField(blank=True, max_length=20, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        self.latitude = self.position.latitude
+        self.longitude = self.position.longitude
+        super().save(force_insert, force_update, using, update_fields)
 
 
 class Path(models.Model):
