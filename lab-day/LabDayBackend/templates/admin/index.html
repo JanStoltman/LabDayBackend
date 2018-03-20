@@ -12,6 +12,15 @@
 
 {% block content %}
 <div id="content-main">
+
+<form action="/admin/create-users-for-paths" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <label for="create_users_for_paths">Create users</label>
+    <input type="hidden" name="next" value="{{ request.path }}">
+    <input id="create_users_for_paths" type="submit" value="Create users for paths">
+</form>
+
 <form action="/admin/create-users" method="post">
     {% csrf_token %}
     {{ form }}
