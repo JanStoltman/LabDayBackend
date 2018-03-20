@@ -8,10 +8,11 @@ from django.http.response import HttpResponseRedirect, HttpResponseNotModified
 from django.utils.crypto import get_random_string
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAdminUser
-
 from .settings import EMAIL_PORT, EMAIL_HOST
 from .settings_secret import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
-
+import sys
+sys.path.append("..")
+from labday_api.models import Path
 User = get_user_model()
 
 
@@ -36,7 +37,7 @@ class CreateUsers(ObtainAuthToken):
             username = 'User{0}'.format(i + 1)
             password = get_random_string(10)
             try:
-                #TODO: In case of error this will create user without password
+                # TODO: In case of error this will create user without password
                 user = User.objects.create_user(username=username)
                 user.userdetails.path_id = path_id
                 user.userdetails.save()
@@ -44,6 +45,44 @@ class CreateUsers(ObtainAuthToken):
                 user.save()
 
                 assert authenticate(username=username, password=password)
+
+            except:
+                print('There was a problem creating the user: {0}.  Error: {1}.'
+                      .format(username, sys.exc_info()[1]))
+                return False
+        return True
+
+
+class CreateUsersForPaths(ObtainAuthToken):
+    permission_classes = (IsAdminUser,)
+
+    def post(self, request, *args, **kwargs):
+        if self.create_users_for_paths():
+            nxt = request.POST.get('next', '/')
+            return HttpResponseRedirect(nxt)
+        else:
+            return HttpResponseNotModified()
+
+    @staticmethod
+    def create_users_for_paths():
+        # TODO: Change this, so we could better assert the number of users
+        users_number = User.objects.all().count()
+        paths = Path.objects.all()
+
+        i = users_number
+        for path in paths:
+            username = 'User{0}'.format(i + 1)
+            password = get_random_string(10)
+            try:
+                # TODO: In case of error this will create user without password
+                user = User.objects.create_user(username=username)
+                user.userdetails.path_id = path.id
+                user.userdetails.save()
+                user.set_password(password)
+                user.save()
+
+                assert authenticate(username=username, password=password)
+                i += 1
 
             except:
                 print('There was a problem creating the user: {0}.  Error: {1}.'

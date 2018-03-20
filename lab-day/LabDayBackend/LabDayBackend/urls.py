@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .admin_views import CreateUsers, SendUsers
+from .admin_views import CreateUsers, SendUsers, CreateUsersForPaths
 
 urlpatterns = [
     path('api/', include('labday_api.urls')),
     path('admin/', admin.site.urls),
     path('admin/create-users', CreateUsers.as_view()),
+    path('admin/create-users-for-paths', CreateUsersForPaths.as_view()),
     path('admin/send-users', SendUsers.as_view()),
 ]

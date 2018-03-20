@@ -80,20 +80,21 @@ class Path(models.Model):
 
 class Timetable(models.Model):
     id = models.AutoField(primary_key=True)
-    path_id = models.ForeignKey(Path, on_delete=models.SET_NULL,
-                                null=True, blank=True, default=None)
-    event_id = models.ForeignKey(Event, on_delete=models.SET_NULL,
-                                 null=True, blank=True, default=None)
+    path_id = models.ForeignKey(Path, on_delete=models.DO_NOTHING,
+                               default=None)
+    event_id = models.ForeignKey(Event, on_delete=models.DO_NOTHING,
+                               default=None)
     time_start = models.BigIntegerField(default=0, blank=True)
     time_end = models.BigIntegerField(default=0, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
     def __str__(self):
-        return str(self.id) + '. ' + self.name
+        return str(self.id) + '. Path: ' + str(self.path_id)
 
 class UserDetails(models.Model):
-    path = models.ForeignKey(to=Path, on_delete=models.DO_NOTHING, null=True, blank=True)
+    path = models.ForeignKey(to=Path, on_delete=models.DO_NOTHING,
+                             null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     password_used = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now=True)
