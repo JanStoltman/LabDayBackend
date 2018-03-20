@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from django.http import HttpResponseForbidden
 from rest_framework.views import APIView
 from rest_framework.authtoken.views import ObtainAuthToken
+from django.db.models import Q
 
 from .permissions import IsAdminOrReadOnly
 from .serializers import *
@@ -47,6 +48,7 @@ class Timetables(viewsets.ModelViewSet):
 
 
 class AppData(ObjectMultipleModelAPIView):
+    permission_classes = (IsAdminOrReadOnly, IsAuthenticated,)
     querylist = [
         {'queryset': Event.objects.all(), 'serializer_class': EventSerializer, 'label': 'events'},
         {'queryset': Speaker.objects.all(), 'serializer_class': SpeakerSerializer, 'label': 'speakers'},
@@ -54,7 +56,36 @@ class AppData(ObjectMultipleModelAPIView):
         {'queryset': Path.objects.all(), 'serializer_class': PathSerializer, 'label': 'paths'},
         {'queryset': Timetable.objects.all(), 'serializer_class': TimetableSerializer, 'label': 'timetables'}
     ]
-    permission_classes = (IsAdminOrReadOnly, IsAuthenticated,)
+
+    def get(self, request, *args, **kwargs):
+        if request.user.userdetails is not None:
+            self.path_id = request.user.userdetails.path_id
+        else:
+            self.path_id = 1
+        return super().get(request, *args, **kwargs)
+
+    def get_querylist(self):
+        paths = Path.objects.select_for_update().filter(~Q(pk=self.path_id))
+        paths.update(active=False)
+        path = Path.objects.select_for_update().filter(pk=self.path_id)
+        path.update(active=True)
+        self.querylist = [
+            {'queryset': Event.objects.all(), 'serializer_class': EventSerializer, 'label': 'events'},
+            {'queryset': Speaker.objects.all(), 'serializer_class': SpeakerSerializer, 'label': 'speakers'},
+            {'queryset': Place.objects.all(), 'serializer_class': PlaceSerializer, 'label': 'places'},
+            {'queryset': sorted(list(chain(path, paths)),key=attrgetter('pk')),
+             'serializer_class': PathSerializer, 'label': 'paths'},
+            {'queryset': Timetable.objects.all(), 'serializer_class': TimetableSerializer, 'label': 'timetables'}
+        ]
+
+        assert self.querylist is not None, (
+            '{} should either include a `querylist` attribute, '
+            'or override the `get_querylist()` method.'.format(
+                self.__class__.__name__
+            )
+        )
+
+        return self.querylist
 
 
 class LastUpdate(APIView):
