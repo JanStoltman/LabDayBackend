@@ -21,6 +21,9 @@ class Speaker(models.Model):
     img = models.TextField(blank=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return str(self.id) + '. ' + self.name
+
 
 class Event(models.Model):
     id = models.AutoField(primary_key=True)
@@ -40,6 +43,9 @@ class Event(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
+    def __str__(self):
+        return str(self.id) + '. ' + self.name + ' | ' + self.address
+
 class Place(models.Model):
     id = models.AutoField(primary_key=True)
     type = models.IntegerField()
@@ -55,6 +61,10 @@ class Place(models.Model):
         self.latitude = self.position.latitude
         self.longitude = self.position.longitude
         super().save(force_insert, force_update, using, update_fields)
+
+
+    def __str__(self):
+        return str(self.id) + '. ' + self.name
 
 
 class Path(models.Model):
@@ -77,6 +87,10 @@ class Timetable(models.Model):
     time_start = models.BigIntegerField(default=0, blank=True)
     time_end = models.BigIntegerField(default=0, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        return str(self.id) + '. ' + self.name
 
 class UserDetails(models.Model):
     path = models.ForeignKey(to=Path, on_delete=models.DO_NOTHING, null=True, blank=True)
