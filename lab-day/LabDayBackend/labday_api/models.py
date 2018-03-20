@@ -90,7 +90,7 @@ class Timetable(models.Model):
 
 
     def __str__(self):
-        return str(self.id) + '. Path: ' + str(self.path_id)
+        return str(self.id) + '. Path: ' + str(self.path_id) + ' | Event: ' + str(self.event_id)
 
 class UserDetails(models.Model):
     path = models.ForeignKey(to=Path, on_delete=models.DO_NOTHING,
