@@ -38,10 +38,15 @@ class Event(models.Model):
                                    related_name='events')
     dor1_img = models.TextField(blank=True)
     dor2_img = models.TextField(blank=True)
-    latitude = models.TextField(blank=True)
-    longitude = models.TextField(blank=True)
+    position = GeopositionField(blank=True)
+    latitude = models.TextField(blank=True, editable=False)
+    longitude = models.TextField(blank=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        self.latitude = self.position.latitude
+        self.longitude = self.position.longitude
+        super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
         return str(self.id) + '. ' + self.name + ' | ' + self.address
@@ -53,8 +58,8 @@ class Place(models.Model):
     info = models.TextField(blank=True)
     img = models.TextField(blank=True)
     position = GeopositionField(blank=True)
-    latitude = models.TextField(blank=True, max_length=20, editable=False)
-    longitude = models.TextField(blank=True, max_length=20, editable=False)
+    latitude = models.TextField(blank=True, editable=False)
+    longitude = models.TextField(blank=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
