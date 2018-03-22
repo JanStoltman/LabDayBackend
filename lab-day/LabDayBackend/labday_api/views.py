@@ -1,17 +1,13 @@
 from itertools import chain
 from operator import attrgetter
 
-from django.http import HttpResponse
-import json
-from django.utils.crypto import get_random_string
+from django.db.models import Q
 from drf_multiple_model.views import ObjectMultipleModelAPIView
 from rest_framework import viewsets
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.http import HttpResponseForbidden
 from rest_framework.views import APIView
-from rest_framework.authtoken.views import ObtainAuthToken
-from django.db.models import Q
 
 from .permissions import IsAdminOrReadOnly
 from .serializers import *
@@ -109,10 +105,11 @@ class ObtainToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
 
-        # Change password so each login/password can be used only once
-        if not (user.username == 'test' or user.is_staff):
-            user.set_password(get_random_string(32))
-            user.userdetails.password_used = True
-            user.save()
+        # REQ CHANGES
+        # # Change password so each login/password can be used only once
+        # if not (user.username == 'test' or user.is_staff):
+        #     user.set_password(get_random_string(32))
+        #     user.userdetails.password_used = True
+        #     user.save()
 
         return Response({'token': token.key})

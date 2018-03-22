@@ -105,8 +105,7 @@ class SendUsers(ObtainAuthToken):
 
     def send_email(self, email):
         users = User.objects. \
-            filter(username__contains='User'). \
-            filter(userdetails__password_used=False)
+            filter(is_staff=False)
         try:
             us = ''
 

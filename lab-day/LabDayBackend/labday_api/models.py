@@ -1,12 +1,11 @@
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from geoposition import Geoposition
 from geoposition.fields import GeopositionField
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import User
-from django.conf import settings
-from django.dispatch import receiver
+
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -101,6 +100,8 @@ class UserDetails(models.Model):
     path = models.ForeignKey(to=Path, on_delete=models.DO_NOTHING,
                              null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    # TODO: REQ CHANGES -- delete this
     password_used = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now=True)
 
