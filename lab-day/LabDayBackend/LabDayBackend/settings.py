@@ -17,7 +17,7 @@ from .settings_secret import *
 if socket.gethostname() == "yggdralisk-Lenovo-Z51-70":
     from .local_settings import *
 else:
-    from .local_settings import *
+    from .production_settings import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
